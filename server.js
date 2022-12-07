@@ -1,18 +1,19 @@
 const express = require('express')
-const cors = require('cors')
-const mysql = require('mysql2')
+const app = express()
 const port = 3400
+const router = require('./router/users')
 
-const sequelize = require('./db.config')
+const sequelize = require('./config/db.config')
 sequelize.sync().then(() => console.log('database ready!'))
 
-const listEndpoint = require('./routes/list')
-const todoEndpoint = require('./routes/todo')
-const app = express()
-app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
 
-app.use('/lists', listEndpoint)
-app.use('/todos', todoEndpoint)
+app.use(router)
 
-app.listen(port, () => console.log(`running server on port ${port}`))
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
